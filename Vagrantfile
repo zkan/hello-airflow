@@ -11,5 +11,7 @@ Vagrant.configure(2) do |config|
     vb.cpus = 1
   end
 
+  config.vm.synced_folder "airflow/", "/home/ubuntu/airflow"
+
   config.vm.provision "shell", path: "bootstrap.sh"
 end
