@@ -7,7 +7,7 @@ default_args = {
     'owner': 'milseiei',
     'depends_on_past': False,
     'start_date': datetime(2017, 1, 12),
-    'email': ['burasakorn.sby@gmail.com'],
+    'email': ['mils@pronto.com'],
     'email_on_failure': False,
     'email_on_retry': False,
     'retries': 1,
@@ -15,7 +15,7 @@ default_args = {
 }
 
 dag = DAG('Time_splitter',
-	schedule_interval='0,30 * * * *',	
+	schedule_interval='0,30 * * * *',
 	default_args=default_args)
 
 
