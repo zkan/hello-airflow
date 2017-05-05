@@ -1,39 +1,33 @@
-from airflow import DAG
-from airflow.operators import BashOperator
-from datetime import datetime, timedelta
+import datetime
 
-# Following are defaults which can be overridden later on
+from airflow import DAG
+from airflow.operators.bash_operator import BashOperator
+
+
 default_args = {
-    'owner': 'milseiei',
-    'depends_on_past': False,
-    'start_date': datetime(2017, 1, 12),
-    'email': ['mils@pronto.com'],
-    'email_on_failure': False,
-    'email_on_retry': False,
-    'retries': 1,
-    'retry_delay': timedelta(minutes=1),
+    'owner': 'prontotools',
+    'email': ['prontotools@prontomarketing.com'],
+    'start_date': datetime.datetime(2017, 1, 12),
 }
 
-dag = DAG('Time_splitter',
-	schedule_interval='0,30 * * * *',
-	default_args=default_args)
-
+dag = DAG('time_splitter',
+    default_args=default_args,
+    schedule_interval='0,30 * * * *')
 
 t1 = BashOperator(
-    task_id='task_1_date_data',
+    task_id='get_date',
     bash_command='date > /home/ubuntu/airflow/dags/data.txt',
     dag=dag)
 
 t2 = BashOperator(
-    task_id='task_2_split_time',
+    task_id='split_into_time',
     bash_command='python /home/ubuntu/airflow/dags/split_into_time.py',
     dag=dag)
 
 t3 = BashOperator(
-    task_id='task_3_split_into_mins',
+    task_id='split_into_mins',
     bash_command='python /home/ubuntu/airflow/dags/split_into_mins.py',
     dag=dag)
 
-t1.set_downstream(t2)
-t2.set_downstream(t3)
-
+t2.set_upstream(t1)
+t3.set_upstream(t2)
