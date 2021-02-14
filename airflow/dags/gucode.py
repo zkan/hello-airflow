@@ -1,7 +1,7 @@
 import datetime
 
 from airflow.models import DAG
-from airflow.operators.bash_operator import BashOperator
+from airflow.operators.bash import BashOperator
 
 
 dag = DAG(
@@ -24,4 +24,4 @@ t2 = BashOperator(
     dag=dag
 )
 
-t2.set_upstream(t1)
+t1 >> t2

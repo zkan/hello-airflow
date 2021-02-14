@@ -1,17 +1,22 @@
 from datetime import datetime
 
 from airflow import DAG
-from airflow.operators.bash_operator import BashOperator
-
+from airflow.operators.bash import BashOperator
 
 default_args = {
     'owner': 'airflow',
     'depends_on_past': False,
     'start_date': datetime(2017, 5, 8),
-    'email': ['airflow@pronto.com']
+    'email': ['zkan@hey.com']
 }
 
-dag = DAG('pronto_dag_example', default_args=default_args)
+dag = DAG(
+    'my_dag_example',
+    default_args=default_args,
+    schedule_interval='*/30 * * * *',
+    catchup=False,
+    tags=['odds',],
+)
 
 t1 = BashOperator(
     task_id='print_date',
@@ -31,5 +36,4 @@ t3 = BashOperator(
     dag=dag
 )
 
-t2.set_upstream(t1)
-t3.set_upstream(t2)
+t1 >> t2 >> t3

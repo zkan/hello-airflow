@@ -2,14 +2,14 @@ import datetime
 import os
 
 from airflow import DAG
-from airflow.operators.bash_operator import BashOperator
+from airflow.operators.bash import BashOperator
 
 
 AIRFLOW_HOME = os.environ.get('AIRFLOW_HOME')
 
 default_args = {
-    'owner': 'prontotools',
-    'email': ['prontotools@prontomarketing.com'],
+    'owner': 'zkan',
+    'email': ['zkan@hey.com'],
     'start_date': datetime.datetime(2017, 1, 12),
 }
 
