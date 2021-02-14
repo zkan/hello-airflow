@@ -1,8 +1,11 @@
 import datetime
+import os
 
 from airflow import DAG
 from airflow.operators.bash_operator import BashOperator
 
+
+AIRFLOW_HOME = os.environ.get('AIRFLOW_HOME')
 
 default_args = {
     'owner': 'prontotools',
@@ -10,24 +13,30 @@ default_args = {
     'start_date': datetime.datetime(2017, 1, 12),
 }
 
-dag = DAG('time_splitter',
+dag = DAG(
+    'time_splitter',
     default_args=default_args,
-    schedule_interval='0,30 * * * *')
+    schedule_interval='0,30 * * * *',
+    catchup=False,
+    tags=['odds'],
+)
 
 t1 = BashOperator(
     task_id='get_date',
-    bash_command='date > /home/ubuntu/airflow/dags/data.txt',
-    dag=dag)
+    bash_command=f'date > {AIRFLOW_HOME}/dags/data.txt',
+    dag=dag
+)
 
 t2 = BashOperator(
     task_id='split_into_time',
-    bash_command='python /home/ubuntu/airflow/dags/split_into_time.py',
-    dag=dag)
+    bash_command=f'python {AIRFLOW_HOME}/dags/split_into_time.py',
+    dag=dag
+)
 
 t3 = BashOperator(
     task_id='split_into_mins',
-    bash_command='python /home/ubuntu/airflow/dags/split_into_mins.py',
-    dag=dag)
+    bash_command=f'python {AIRFLOW_HOME}/dags/split_into_mins.py',
+    dag=dag
+)
 
-t2.set_upstream(t1)
-t3.set_upstream(t2)
+t1 >> t2 >> t3

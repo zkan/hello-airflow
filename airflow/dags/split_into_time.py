@@ -1,6 +1,11 @@
-f = open('/home/ubuntu/airflow/dags/data.txt')
-time_data = f.read()
-time_list = time_data.split()
+import os
 
-split_text = open('/home/ubuntu/airflow/dags/time.txt', 'w')
-split_text.write(str(time_list[3]))
+
+AIRFLOW_HOME = os.environ.get('AIRFLOW_HOME')
+
+with open(f'{AIRFLOW_HOME}/dags/data.txt') as f:
+    time_data = f.read()
+    time_list = time_data.split()
+
+with open(f'{AIRFLOW_HOME}/dags/time.txt', 'w') as split_text:
+    split_text.write(str(time_list[3]))
