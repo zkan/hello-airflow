@@ -8,7 +8,8 @@ dag = DAG(
     dag_id='gucode',
     default_args={'start_date': datetime.datetime(2017, 5, 5)},
     schedule_interval='*/5 * * * *',
-    catchup=False
+    catchup=False,
+    tags=['odds'],
 )
 
 t1 = BashOperator(
