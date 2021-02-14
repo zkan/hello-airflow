@@ -4,3 +4,4 @@
 *.pid
 __pycache__
 logs
+*.db
