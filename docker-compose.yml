@@ -10,10 +10,9 @@ x-airflow-common:
     - AIRFLOW__CORE__LOGGING_LEVEL=INFO
   volumes:
     - ./airflow/dags:/opt/airflow/dags
-    - ./airflow/logs:/opt/airflow/logs
-    - ./airflow/plugins:/opt/airflow/plugins
-    - ./airflow/airflow.cfg:/opt/airlfow/airflow.cfg
-    - ./airflow/webserver_config.py:/opt/airlfow/webserver_config.py
+    - ./airflow-data/logs:/opt/airflow/logs
+    - ./airflow-data/plugins:/opt/airflow/plugins
+    - ./airflow-data/airflow.cfg:/opt/airlfow/airflow.cfg
   depends_on:
     - postgres
 
