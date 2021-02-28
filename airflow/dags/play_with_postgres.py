@@ -1,5 +1,6 @@
 import datetime
 
+from airflow import macros
 from airflow.models import DAG
 from airflow.operators.python import PythonOperator
 from airflow.providers.postgres.hooks.postgres import PostgresHook
@@ -23,10 +24,28 @@ def dump_data(table: str):
     pg_hook.bulk_dump(table, f'/opt/airflow/dags/{table}_export')
 
 
+def dump_transaction_data_each_week(yesterday_ds, **kwargs):
+    print(kwargs)
+    week_end_date = macros.ds_format(yesterday_ds, '%Y-%m-%d', '%d-%b-%y')
+
+    pg_hook = PostgresHook(postgres_conn_id='my_postgres_conn', schema='breakfast')
+    connection = pg_hook.get_conn()
+    cursor = connection.cursor()
+
+    sql = f"""
+        SELECT * FROM transaction WHERE week_end_date = '{week_end_date}'
+    """
+    cursor.execute(sql)
+    rows = cursor.fetchall()
+    for each in rows:
+        print(each)
+
+
 with DAG(
         dag_id='play_with_postgres',
         default_args={'start_date': datetime.datetime(2017, 5, 5)},
-        schedule_interval='*/10 * * * *',
+        # schedule_interval='*/10 * * * *',
+        schedule_interval='0 0 * * THU',
         catchup=False,
         tags=['odds'],
     ) as dag:
@@ -62,4 +81,9 @@ with DAG(
         op_kwargs={'table': 'transaction'},
     )
 
-    t1 >> t2 >> [t3, t4, t5]
+    t6 = PythonOperator(
+        task_id='dump_transaction_each_week',
+        python_callable=dump_transaction_data_each_week,
+    )
+
+    t1 >> t2 >> [t3, t4, t5] >> t6
