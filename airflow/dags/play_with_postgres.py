@@ -1,8 +1,8 @@
 import datetime
 
-from airflow.hooks.postgres_hook import PostgresHook
 from airflow.models import DAG
 from airflow.operators.python import PythonOperator
+from airflow.providers.postgres.hooks.postgres import PostgresHook
 from airflow.providers.postgres.operators.postgres import PostgresOperator
 
 
@@ -16,6 +16,11 @@ def get_data():
     rows = cursor.fetchall()
     for each in rows:
         print(each)
+
+
+def dump_data(table: str):
+    pg_hook = PostgresHook(postgres_conn_id='my_postgres_conn', schema='breakfast')
+    pg_hook.bulk_dump(table, f'/opt/airflow/dags/{table}_export')
 
 
 with DAG(
@@ -39,4 +44,22 @@ with DAG(
         python_callable=get_data,
     )
 
-    t1 >> t2
+    t3 = PythonOperator(
+        task_id='dump_product_task',
+        python_callable=dump_data,
+        op_kwargs={'table': 'product'},
+    )
+
+    t4 = PythonOperator(
+        task_id='dump_store_task',
+        python_callable=dump_data,
+        op_kwargs={'table': 'store'},
+    )
+
+    t5 = PythonOperator(
+        task_id='dump_transaction_task',
+        python_callable=dump_data,
+        op_kwargs={'table': 'transaction'},
+    )
+
+    t1 >> t2 >> [t3, t4, t5]
