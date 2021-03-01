@@ -12,7 +12,9 @@ def get_data():
     connection = pg_hook.get_conn()
     cursor = connection.cursor()
 
-    sql = 'SELECT * FROM product'
+    sql = """
+        SELECT * FROM product
+    """
     cursor.execute(sql)
     rows = cursor.fetchall()
     for each in rows:
@@ -25,7 +27,6 @@ def dump_data(table: str):
 
 
 def dump_transaction_data_each_week(yesterday_ds, **kwargs):
-    print(kwargs)
     week_end_date = macros.ds_format(yesterday_ds, '%Y-%m-%d', '%d-%b-%y')
 
     pg_hook = PostgresHook(postgres_conn_id='my_postgres_conn', schema='breakfast')
