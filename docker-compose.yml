@@ -1,7 +1,8 @@
-version: '3'
+version: '3.8'
+
 x-airflow-common:
   &airflow-common
-  image: apache/airflow:2.0.1
+  image: apache/airflow:2.1.2-python3.8
   environment:
     - AIRFLOW__CORE__EXECUTOR=LocalExecutor
     - AIRFLOW__CORE__SQL_ALCHEMY_CONN=postgresql+psycopg2://postgres:postgres@postgres:5432/airflow
@@ -19,6 +20,8 @@ x-airflow-common:
 services:
   postgres:
     image: postgres:12
+    volumes:
+      - airflow_postgres_data:/var/lib/postgresql/data
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
@@ -26,22 +29,6 @@ services:
       - POSTGRES_PORT=5432
     ports:
       - "5432:5432"
-
-  airflow-init:
-    << : *airflow-common
-    container_name: airflow_init
-    entrypoint: /bin/bash
-    command:
-      - -c
-      - airflow users list || ( airflow db init &&
-        airflow users create
-          --role Admin
-          --username airflow
-          --password airflow
-          --email airflow@airflow.com
-          --firstname airflow
-          --lastname airflow )
-    restart: on-failure
 
   airflow-webserver:
     << : *airflow-common
@@ -56,3 +43,6 @@ services:
     command: airflow scheduler
     container_name: airflow_scheduler
     restart: always
+
+volumes:
+  airflow_postgres_data:
