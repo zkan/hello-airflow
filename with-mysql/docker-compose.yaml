@@ -299,3 +299,4 @@ services:
 
 volumes:
   postgres-db-volume:
+  mysql-db-volume:
