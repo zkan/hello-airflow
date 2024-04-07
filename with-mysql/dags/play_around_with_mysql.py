@@ -6,7 +6,7 @@ from airflow.utils.dates import days_ago
 
 
 def _insert_some_persons():
-    hook = MySqlHook(mysql_conn_id="my_sql_conn")
+    hook = MySqlHook(mysql_conn_id="my_mysql_conn")
     conn = hook.get_conn()
     cur = conn.cursor()
 
@@ -18,7 +18,7 @@ def _insert_some_persons():
             (2, 'Jane', 'Du')
     """
     cur.execute(sql)
-    cur.commit()
+    conn.commit()
     conn.close()
 
 
@@ -47,7 +47,7 @@ with DAG(
             create table if not exists persons (
                 person_id int,
                 last_name varchar(255),
-                first_name varchar(255),
+                first_name varchar(255)
             )
         """,
     )
