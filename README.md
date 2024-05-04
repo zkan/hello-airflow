@@ -1,5 +1,17 @@
 # Hello, Airflow!
 
+## Running Airflow in Docker
+
+```bash
+mkdir -p ./mnt/dags ./mnt/logs ./mnt/plugins ./mnt/config ./mnt/tests
+echo -e "AIRFLOW_UID=$(id -u)" > .env
+```
+
+```bash
+docker compose up
+```
+
+**Ref:** https://airflow.apache.org/docs/apache-airflow/stable/howto/docker-compose/index.html
 
 ## Running on Local Machine
 
