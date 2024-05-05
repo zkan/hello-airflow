@@ -6,6 +6,7 @@ from airflow.utils import timezone
 
 
 default_args = {
+    "owner": "zkan",
     "start_date": timezone.datetime(2024, 5, 4),
 }
 @dag(
