@@ -7,7 +7,7 @@ default_args = {
     "start_date": timezone.datetime(2024, 5, 1),
 }
 @dag(
-    schedule_interval="@daily",
+    schedule="@daily",
     default_args=default_args,
     catchup=True,
 )
