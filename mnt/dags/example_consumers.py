@@ -6,6 +6,11 @@ from airflow.utils import timezone
 DATASET = Dataset("data_from_producer")
 
 
+@task
+def consume():
+    return "Consume!"
+
+
 default_args = {
     "owner": "zkan",
 }
@@ -14,11 +19,18 @@ default_args = {
     schedule=[DATASET],
     default_args=default_args,
 )
-def example_consumer():
-
-    @task
-    def consume():
-        return "Consume!"
+def example_consumer_1():
+    consume()
 
 
-example_consumer()
+@dag(
+    start_date=timezone.datetime(2024, 5, 1),
+    schedule=[DATASET],
+    default_args=default_args,
+)
+def example_consumer_2():
+    consume()
+
+
+example_consumer_1()
+example_consumer_2()

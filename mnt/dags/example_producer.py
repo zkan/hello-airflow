@@ -21,4 +21,7 @@ def example_producer():
         return "Produce!"
 
 
+    produce()
+
+
 example_producer()
