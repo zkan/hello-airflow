@@ -1,7 +1,4 @@
-import random
-
-from airflow.decorators import dag, task, task_group
-from airflow.operators.empty import EmptyOperator
+from airflow.decorators import dag, task
 from airflow.utils import timezone
 
 
@@ -25,31 +22,8 @@ def example_taskflow_api():
         return f"{greeting}, World!"
 
 
-    @task_group()
-    def my_group(text: str):
-        start = EmptyOperator(task_id="start")
-
-        @task
-        def get_random_number() -> int:
-            return random.randint(1, 10)
-
-
-        @task
-        def increment(text: str, number: int) -> int:
-            return f"{text}, value: {number} + 1"
-
-
-        end = EmptyOperator(task_id="end")
-
-        number = get_random_number()
-        result = increment(text, number)
-        start >> number
-        result >> end
-
-
     hello = greeting()
-    complete_greeting = world(hello)
-    my_group(complete_greeting)
+    world(hello)
 
 
 example_taskflow_api()
