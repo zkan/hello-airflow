@@ -8,8 +8,7 @@ This is an example DAD that uses a document.
 - [Lessons in adopting Airflow on Google Cloud](https://medium.com/booking-com-development/lessons-in-adopting-airflow-51821709cba4)
 """
 
-from airflow.decorators import dag, task, task_group
-from airflow.operators.empty import EmptyOperator
+from airflow.decorators import dag, task
 from airflow.utils import timezone
 
 

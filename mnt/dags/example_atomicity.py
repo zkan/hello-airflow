@@ -1,5 +1,4 @@
-from airflow.decorators import dag, task, task_group
-from airflow.operators.empty import EmptyOperator
+from airflow.decorators import dag, task
 from airflow.utils import timezone
 
 
